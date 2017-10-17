@@ -57,6 +57,12 @@ To start using the anomaly detector you’ll have to go through just a few simpl
   * *deployment/CAD_conf.yml*
 * Run CloudFormation (parameters detailed in the section below)
   * *deployment/anomaly_detector.yml*
+* (optional) If left the redshift_role parameter in the conf file empty
+  * Add the Instance role created by the cloudformation to your Redshift cluster:
+    * In the aws console go to:  
+      redshift --> clusters --> your cluster --> manage IAM roles
+    * Add the anomalyDetectorInstanceRole
+    * Edit your CAD_conf.yml file and set the param value to the role's ARN (can be found in the IAM console --> Roles --> anomalyDetectorInstanceRole)
 * Set trigger for the Lambda function:  
   * In the AWS console go to:  
     Lambda --> CUR_Write_Trigger --> Triggers --> add trigger
@@ -127,7 +133,9 @@ The parameters in the file are divided to 3 sections:
   * *Usage*: endpoint used to connect to the database (as shown in aws redshift console)
   * *Example*: dbname.abcd.region.redshift.amazonaws.com
 * **redshift_role** (*String*)
-  * *Usage*: full ARN of the role currently used by the redshift cluster. The role must have read access to the CUR S3 bucket. AWS requires the redshift role inline for the copy command, so it needs to be provided manually.
+  * *Usage*: full ARN of the role currently used by the redshift cluster. The role must have read access to the CUR S3 bucket. 
+  We reccomend using the arn for the anomalyDetectorInstanceRole created by the cloudformation.  
+  *If you do, leave that param empty, run the clouformation, and then follow the step described in the setup section*.
   * *Example*: arn:aws:iam::12345:role/Redshift_role
 * **redshift_table_permitted_users** (*String, Optional*)
   * *Usage*: Give users read permission to the billing tables. T string can contain the name of a user or names of a few users seperated by ,

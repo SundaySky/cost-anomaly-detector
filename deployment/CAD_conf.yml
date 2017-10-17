@@ -3,7 +3,7 @@ redshift_user: *
 redshift_password: *
 redshift_db_name: *
 redshift_hostname: *
-redshift_role: anomalyDetectorInstanceRole
+redshift_role:  * anomalyDetectorInstanceRole ARN
 #redshift_table_permitted_users: *
 s3_aws_region: *
 

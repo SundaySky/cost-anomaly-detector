@@ -119,7 +119,7 @@ Resources:
             git init
             git remote add sundaysky https://github.com/SundaySky/cost-anomaly-detector.git
             git pull sundaysky ${branch}
-            aws s3 cp s3://${conf} /sundaysky/anomaly_detector/CAD_conf.yml
+            aws s3 cp s3://${conf} /sundaysky/cost_anomaly_detector/CAD_conf.yml
             pip install --upgrade pip
             /usr/local/bin/pip install boto3
             /usr/local/bin/pip install psycopg2

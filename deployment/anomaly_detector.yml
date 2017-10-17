@@ -74,6 +74,7 @@ Resources:
             Principal: 
               Service: 
                 - "ec2.amazonaws.com"
+                - "redshift.amazonaws.com"
             Action: 
               - "sts:AssumeRole"
       Path: "/"

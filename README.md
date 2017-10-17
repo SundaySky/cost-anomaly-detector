@@ -60,7 +60,7 @@ To start using the anomaly detector you’ll have to go through just a few simpl
     Lambda --> CUR_Write_Trigger --> Triggers --> add trigger
   * Choose S3
     * *Bucket*: choose your CUR bucket
-    * *Prefix*: enter the report prefix
+    * *Prefix*: enter your reports prefix
     * *Suffix*: enter `RedshiftCommands.sql`
 
 

@@ -108,51 +108,49 @@ The parameters in the file are divided to 3 sections:
 	Algorithem params - Thresholds for anomalies. Generally, should not be modified at all.
 	Queries - We provide some examples, you should add/remove queries to get the most relevant data to your account and use cases. (This part will have it's own section)
 
-DB params
-* redshift_user (String)
-  Usage: The database user used to run the SQL commands. the user must have SELECT, CREATE and UPDATE (we reccomend GRANT as well).
-* redshift_password (String)
-  Usage: password for the database user.
-* redshift_db_name (String)
-  Usage: The RedShift database name used for the connection (as shown in aws redshift console)
-  Example: dbname
-* redshift_hostname (String)
-  Usage: endpoint used to connect to the database (as shown in aws redshift console)
-  Example: dbname.abcd.region.redshift.amazonaws.com
-* redshift_role (String)
-  Usage: full ARN of the role currently used by the redshift cluster. The role must have read access to the CUR S3 bucket.
-		 AWS requires the redshift role inline for the copy command, so it needs to be provided manually.
-  Example: arn:aws:iam::12345:role/Redshift_role
-* redshift_table_permitted_users (String, Optional)
-  Usage: Give users read permission to the billing tables. T string can contain the name of a user or names of a few users seperated by ,
-  Example: admin,quicksight,monitoring,jhon
-* s3_aws_region (String)
-  Usage: The AWS region of the bucket containig the CURs
-  Example: us-east-1
+##### DB params
+* **redshift_user** (*String*)
+  * *Usage*: The database user used to run the SQL commands. the user must have SELECT, CREATE and UPDATE (we reccomend GRANT as well).
+* **redshift_password** (*String*)
+  * *Usage*: password for the database user.
+* **redshift_db_name** (*String*)
+  * *Usage*: The RedShift database name used for the connection (as shown in aws redshift console)
+  * *Example*: dbname
+* **redshift_hostname** (*String*)
+  * *Usage*: endpoint used to connect to the database (as shown in aws redshift console)
+  * *Example*: dbname.abcd.region.redshift.amazonaws.com
+* **redshift_role** (*String*)
+  * *Usage*: full ARN of the role currently used by the redshift cluster. The role must have read access to the CUR S3 bucket. AWS requires the redshift role inline for the copy command, so it needs to be provided manually.
+  * *Example*: arn:aws:iam::12345:role/Redshift_role
+* **redshift_table_permitted_users** (*String, Optional*)
+  * *Usage*: Give users read permission to the billing tables. T string can contain the name of a user or names of a few users seperated by ,
+  * *Example*: admin,quicksight,monitoring,jhon
+* **s3_aws_region** (*String*)
+  * *Usage*: The AWS region of the bucket containig the CURs
+  * *Example*: us-east-1
 
-Algorithem params
-* threshold_relative (float)
-  Usage: explained in Algorithem section above
-  Default: 1.25
-* threshold_std
-  Usage: explained in Algorithem section above
-  Default: 4
-* threshold_absolute
-  Usage: explained in Algorithem section above
-  Default: 10
-* history_period_days
-  Usage: explained in Algorithem section above
-  Default: 14 
-* aws_account (String or List of Strings, Optional)
-  Usage: In case your CUR contain data for more than 1 aws account, you can specify which accounts do you want to run the algorithm for. Input accountId string or list of account Ids
-  Example: 123456789012
-  Default: All accounts that appear in the CUR
-* aws_query_regions (List of String)
-  Usage: All aws region in which you have aws resources. Usage will be explained in the Queries section below.
-  Example: 
-* log_folder (String)
-  Usage: Folder for CUR_writer and anomaly detector logs
-  Default: /sundaysky/logs/anomaly_detector/
+##### Algorithem params
+* **threshold_relative** (*float*)
+  * *Usage*: explained in Algorithem section above
+  * *Default*: 1.25
+* **threshold_std** (*int*)
+  * *Usage*: explained in Algorithem section above
+  * *Default*: 4
+* **threshold_absolute** (*int*)
+  * *Usage*: explained in Algorithem section above
+  * *Default*: 10
+* **history_period_days** (*int*)
+  * *Usage*: explained in Algorithem section above
+  * *Default*: 14 
+* **aws_account** (*String or List of Strings, Optional*)
+  * *Usage*: In case your CUR contain data for more than 1 aws account, you can specify which accounts do you want to run the algorithm for. Input accountId string or list of account Ids
+  * *Example*: 123456789012
+  * *Default*: All accounts that appear in the CUR
+* **aws_query_regions** (*List of Strings*)
+  * *Usage*: All aws region in which you have aws resources. Usage will be explained in the Queries section below.
+* **log_folder** (*String*)
+  * *Usage*: Folder for CUR_writer and anomaly detector logs
+  * *Default*: /sundaysky/logs/anomaly_detector/
 
 ### Queries
 tbd

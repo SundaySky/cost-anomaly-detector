@@ -48,7 +48,9 @@ To start using the anomaly detector you’ll have to go through just a few simpl
 	* Choose S3 bucket and prefix (save them for later)
 * Create Redshift table
 	* Use the following SQL command on your Redshift cluster:  
-	```CREATE TABLE IF NOT EXISTS "public"."awsbilling_anomalies" ("anomaly_date" DATE   ENCODE lzo,"service" VARCHAR(512)   ENCODE lzo,"isanomaly" INTEGER   ENCODE lzo,"daily_cost" NUMERIC(10,2)   ENCODE lzo,"mean_cost" NUMERIC(10,2)   ENCODE lzo,"std_cost" NUMERIC(10,2)   ENCODE lzo	,"score" NUMERIC(10,2)   ENCODE lzo);```
+	```sql
+  CREATE TABLE IF NOT EXISTS "public"."awsbilling_anomalies" ("anomaly_date" DATE   ENCODE lzo,"service" VARCHAR(512)   ENCODE lzo,"isanomaly" INTEGER   ENCODE lzo,"daily_cost" NUMERIC(10,2)   ENCODE lzo,"mean_cost" NUMERIC(10,2)   ENCODE lzo,"std_cost" NUMERIC(10,2)   ENCODE lzo	,"score" NUMERIC(10,2)   ENCODE lzo);
+  ```
 * Upload Lambda Code to S3
   * *deployment/CUR_to_Redshift_lambda.zip*
 * Edit and then upload configuration file to S3 (parameters detailed in the section below)

@@ -124,6 +124,10 @@ Resources:
             /usr/local/bin/pip install boto3
             /usr/local/bin/pip install psycopg2
             /usr/local/bin/pip install pandas
+            /sbin/sysctl -w net.ipv4.tcp_keepalive_time=200 net.ipv4.tcp_keepalive_intvl=200 net.ipv4.tcp_keepalive_probes=5
+            echo net.ipv4.tcp_keepalive_time=200 >> /etc/sysctl.conf
+            echo net.ipv4.tcp_keepalive_intvl=200 >> /etc/sysctl.conf
+            echo net.ipv4.tcp_keepalive_probes=5 >> /etc/sysctl.conf
             end script
           - branch: !Ref gitBranch
             conf: !Ref ConfigurationFilePath

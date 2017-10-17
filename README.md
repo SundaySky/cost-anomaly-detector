@@ -5,7 +5,9 @@ AWS’s pay-for-what-you-use policy is one of its great advantages, but it can a
 The “aws cost anomaly detector” is a product made to keep track of your aws account billing and notify you whenever you pay more than expected.
 
 The anomaly detector has 2 main functions:
+
 • Writing the billing data to RedShift
+
 • Finding billing anomalies
 
 

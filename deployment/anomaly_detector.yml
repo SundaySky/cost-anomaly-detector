@@ -114,7 +114,7 @@ Resources:
             yum -y install amazon-ssm-agent
             start amazon-ssm-agent
             mkdir /sundaysky/
-            yum install git
+            yum install git -y
             cd /sundaysky/
             git init
             git remote add sundaysky https://github.com/SundaySky/cost-anomaly-detector.git

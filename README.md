@@ -1,7 +1,7 @@
 # AWS Cost Anomaly Detector
 
 ## Background
-AWS’s pay-for-what-you-use policy is one of its great advantages, but it can also be dangerous – a bug or high traffic might cause unexpected billing.
+AWS’s pay-for-what-you-use policy is one of its great advantages, but it can also be dangerous – a bug or high traffic might cause unexpected billing.  
 The “aws cost anomaly detector” is a product made to keep track of your aws account billing and notify you whenever you pay more than expected.
 
 The anomaly detector has 2 main functions:
@@ -24,8 +24,7 @@ The anomaly detector has 2 main functions:
 * A Lambda function
 	* Triggered by new CUR in the billing bucket and initiates the job on the instance
 * An Auto Scaling Group
-	* The anomaly detector instance is started from an autoscaling group and gets all configuration on startup.
-      This makes the service redundant and easly mantainable.
+	* The anomaly detector instance is started from an autoscaling group and gets all configuration on startup. This makes the service redundant and easly mantainable.  
 	  We reccomendend to have only one instance up at a time, otherwise each run would be randomly assigned to one of the active instances.
 * An anomaly detector instance (t2.micro)
 	* To write the data and detect the anomalies (the process takes too long to run with a lambda function)
@@ -38,14 +37,14 @@ tbd
 ## Setup & Deployment
 To start using the anomaly detector you’ll have to go through just a few simple steps!
 
-* Configure CUR to be written to a bucket with redshift copy command
+* Configure CUR to be written to a bucket with redshift copy command  
 	(if you already have the report, make sure the required options are enabled)
-	* On the AWS console Go to:
+	* In the AWS console Go to:  
 		My Account --> Reports --> Create New Report
 	* Mark the following:
-			Time unit: hour
-			Include: Resource IDs
-			Enable support for Redshift
+			* Time unit: hour
+			* Include: Resource IDs
+			* Enable support for Redshift
 	* Choose S3 bucket and prefix (save them for later)
 * Create Redshift table
 	* Use the following SQL command on your Redshift cluster:  
@@ -56,7 +55,13 @@ To start using the anomaly detector you’ll have to go through just a few simpl
   * *deployment/CAD_conf.yml*
 * Run CloudFormation (parameters detailed in the section below)
   * *deployment/anomaly_detector.yml*
-* Set trigger for the Lambda function
+* Set trigger for the Lambda function:  
+  * In the AWS console go to:  
+    Lambda --> CUR_Write_Trigger --> Triggers --> add trigger
+  * Choose S3
+    * *Bucket*: choose your CUR bucket
+    * *Prefix*: enter the report prefix
+    * *Suffix*: enter `RedshiftCommands.sql`
 
 
 ### CloudFormation

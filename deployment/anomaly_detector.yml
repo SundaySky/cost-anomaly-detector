@@ -61,6 +61,7 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
       RoleName: anomalyDetectorLambdaRole
   
   InstanceRole: 
@@ -80,6 +81,7 @@ Resources:
       Path: "/"
       ManagedPolicyArns: 
         - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
       RoleName: anomalyDetectorInstanceRole
   
   InstanceProfile: 

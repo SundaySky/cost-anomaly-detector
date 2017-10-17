@@ -61,41 +61,42 @@ To start using the anomaly detector you’ll have to go through just a few simpl
 ### CloudFormation
 The cloudformation is written in YAML format.
 Generally, there is no reason to open or change it, just input the parameter values in the aws console.
-Parameters:
+
+#### Parameters:
 * **AutoScalingGroupAvailabilityZone**
   * *Usage*: The availability zone in which the anomaly instance would be started, can be one or more.
   * *Example*: us-east-1d
-* ConfigurationFilePath
-  * Usage: The configuration file would be downloaded on instance startup and used for the scripts.
-  * Example: my-bucket/directory/CAD_conf.yml
-* gitBranch
-  * Usage: The branch of sundaysky's anomaly detector repo that would be pulled on instance startup.
-  * Example: master, my-branch
-  * Default: master. Unless you want to create and use your on branch, there is no need to change it.
-* InstanceImageId
-  * Usage: The image used for the anomaly instance, we reccomendend using the lastest AWS linux AMI by AWS.
-  * Example: ami-a4c7edb2
-* InstanceKeyPair
-  * Usage: The key-pair used to log in to the instance
-  * Example: my-key-pair
-* InstanceSecurityGroup
-  * Usage: Security groups provided to the instance and the lambda
+* **ConfigurationFilePath**
+  * *Usage*: The configuration file would be downloaded on instance startup and used for the scripts.
+  * *Example*: my-bucket/directory/CAD_conf.yml
+* **gitBranch**
+  * *Usage*: The branch of sundaysky's anomaly detector repo that would be pulled on instance startup.
+  * *Example*: master, my-branch
+  * *Default*: master. Unless you want to create and use your on branch, there is no need to change it.
+* **InstanceImageId**
+  * *Usage*: The image used for the anomaly instance, we reccomendend using the lastest AWS linux AMI by AWS.
+  * *Example*: ami-a4c7edb2
+* **InstanceKeyPair**
+  * *Usage*: The key-pair used to log in to the instance
+  * *Example*: my-key-pair
+* **InstanceSecurityGroup**
+  * *Usage*: Security groups provided to the instance and the lambda
 		 * required: access from the lambda (the same vpc, security groups), access to the redshift database (we reccomend same vpc as the db)
 		 * reccomendend: ssh access to the instance for you
-  * Example: sg-abcd, vpc-security-group
-* InstanceSubnets
-  * Usage: Subnets available for the instance. 
-		 * Required: at least 1 per availability-zone provided above
-  * Example: subnet-abcd, subnet-vpc-private
-* InstanceType
-  * Usage: the anomaly instance type (defaults and reccomend: t.micro, no need for an expensive instance)
-  * Example: t2.micro, c4.large
-* LambdaCodeBucket
-  * Usage: The bucket where you uploaded the lambda code
-  * Example: my-bucket
-* LambdaCodeKey
-  * Usage: The key for the zip file
-  * Example: directory/CUR_to_Redshift_lambda.zip
+  * *Example*: sg-abcd, vpc-security-group
+* **InstanceSubnets**
+  * *Usage*: Subnets available for the instance. 
+		 * *Required*: at least 1 per availability-zone provided above
+  * *Example*: subnet-abcd, subnet-vpc-private
+* **InstanceType**
+  * *Usage*: the anomaly instance type (defaults and reccomend: t.micro, no need for an expensive instance)
+  * *Example*: t2.micro, c4.large
+* **LambdaCodeBucket**
+  * *Usage*: The bucket where you uploaded the lambda code
+  * *Example*: my-bucket
+* **LambdaCodeKey**
+  * *Usage*: The key for the zip file
+  * *Example*: directory/CUR_to_Redshift_lambda.zip
 
   
 ### Configuration File

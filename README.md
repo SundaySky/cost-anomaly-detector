@@ -72,8 +72,8 @@ Generally, there is no reason to open or change it, just input the parameter val
   * *Example*: my-bucket/directory/CAD_conf.yml
 * **gitBranch**
   * *Usage*: The branch of sundaysky's anomaly detector repo that would be pulled on instance startup.
-  * *Example*: master, my-branch
   * *Default*: master. Unless you want to create and use your on branch, there is no need to change it.
+  * *Example*: master, my-branch
 * **InstanceImageId**
   * *Usage*: The image used for the anomaly instance, we reccomendend using the lastest AWS linux AMI by AWS.
   * *Example*: ami-a4c7edb2
@@ -144,8 +144,8 @@ The parameters in the file are divided to 3 sections:
   * *Default*: 14 
 * **aws_account** (*String or List of Strings, Optional*)
   * *Usage*: In case your CUR contain data for more than 1 aws account, you can specify which accounts do you want to run the algorithm for. Input accountId string or list of account Ids
-  * *Example*: 123456789012
   * *Default*: All accounts that appear in the CUR
+  * *Example*: 123456789012
 * **aws_query_regions** (*List of Strings*)
   * *Usage*: All aws region in which you have aws resources. Usage will be explained in the Queries section below.
 * **log_folder** (*String*)

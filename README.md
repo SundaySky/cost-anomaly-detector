@@ -62,9 +62,9 @@ To start using the anomaly detector you’ll have to go through just a few simpl
 The cloudformation is written in YAML format.
 Generally, there is no reason to open or change it, just input the parameter values in the aws console.
 Parameters:
-* AutoScalingGroupAvailabilityZone
-  * Usage: The availability zone in which the anomaly instance would be started, can be one or more.
-  * Example: us-east-1d
+* **AutoScalingGroupAvailabilityZone**
+  * *Usage*: The availability zone in which the anomaly instance would be started, can be one or more.
+  * *Example*: us-east-1d
 * ConfigurationFilePath
   * Usage: The configuration file would be downloaded on instance startup and used for the scripts.
   * Example: my-bucket/directory/CAD_conf.yml

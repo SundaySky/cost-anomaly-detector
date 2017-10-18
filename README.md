@@ -186,12 +186,11 @@ SELECT * FROM awsbilling_anomalies where anomaly_date=DATE 'today'-2;
 ```
 
 **Get results by date**  
-by date:
+*by date*:
 ```sql
 SELECT * FROM awsbilling_anomalies where anomaly_date=DATE '2017-10-15';
 ```
-Since date:
-by date:
+*Since date*:
 ```sql
 SELECT * FROM awsbilling_anomalies where anomaly_date>=DATE '2017-10-15';
 ```

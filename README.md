@@ -40,7 +40,7 @@ To start using the anomaly detector you’ll have to go through just a few simpl
 * Configure CUR to be written to a bucket with redshift copy command  
 	(if you already have the report, make sure the required options are enabled)
 	* In the AWS console Go to:  
-		My Account :arrow_right: Reports --> Create New Report
+		My Account -> Reports --> Create New Report
 	* Mark the following:
 			* Time unit: hour
 			* Include: Resource IDs

@@ -1,0 +1,170 @@
+Description: 
+  Deploys SundaySky Cost Anomaly Detector
+
+Parameters: 
+  # Instance Params
+  InstanceType: 
+    Type: String
+    Default: t2.micro
+    Description: Recommended - t2.micro
+  InstanceSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnet IDs in the VPC
+  InstanceSecurityGroup:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Security Groups
+  InstanceImageId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-a4c7edb2
+    Description: Recommended - native AWS Amazon-Linux AMI
+  InstanceKeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Key pair used to connect to the instance
+  LambdaCodeBucket:
+    Type: String
+    Description: Bucket name where CUR_lambda is
+  LambdaCodeKey:
+    Type: String
+    Description: Key in bucket where CUR_lambda is
+  ConfigurationFilePath:
+    Type: String
+    Default: bucket/key
+    Description: full s3 path to the yaml configuration file in bucket/key format
+  gitBranch:
+    Type: String
+    Default: master
+    Description: branch to pull from sundaysky git repo
+
+  
+  AutoScalingGroupAvailabilityZone:
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+    Description: AvailabilityZone
+
+
+Resources:
+  LambdaRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "lambda.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+      RoleName: anomalyDetectorLambdaRole
+  
+  InstanceRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+                - "redshift.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+      RoleName: anomalyDetectorInstanceRole
+  
+  InstanceProfile: 
+    Type: "AWS::IAM::InstanceProfile"
+    Properties: 
+      Path: "/"
+      Roles: 
+        - !Ref InstanceRole
+      InstanceProfileName: anomalyDetectorProfile
+  
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      AssociatePublicIpAddress: false
+      SecurityGroups: !Ref InstanceSecurityGroup
+      EbsOptimized: false
+      IamInstanceProfile: anomalyDetectorProfile
+      ImageId: !Ref InstanceImageId
+      InstanceMonitoring: false
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref InstanceKeyPair
+      # http://sundaysky-init.s3.amazonaws.com/anomaly_detector/cad_upstart.txt
+      UserData: 
+        Fn::Base64: !Sub 
+          - |
+            #upstart-job 
+            start on stopped rc RUNLEVEL=[2345]
+            script
+            yum update sudo -y
+            yum -y install amazon-ssm-agent
+            start amazon-ssm-agent
+            mkdir /sundaysky/
+            yum install git -y
+            cd /sundaysky/
+            git init
+            git remote add sundaysky https://github.com/SundaySky/cost-anomaly-detector.git
+            git pull sundaysky ${branch}
+            aws s3 cp s3://${conf} /sundaysky/cost_anomaly_detector/CAD_conf.yml
+            pip install --upgrade pip
+            /usr/local/bin/pip install boto3
+            /usr/local/bin/pip install psycopg2
+            /usr/local/bin/pip install pandas
+            /sbin/sysctl -w net.ipv4.tcp_keepalive_time=200 net.ipv4.tcp_keepalive_intvl=200 net.ipv4.tcp_keepalive_probes=5
+            echo net.ipv4.tcp_keepalive_time=200 >> /etc/sysctl.conf
+            echo net.ipv4.tcp_keepalive_intvl=200 >> /etc/sysctl.conf
+            echo net.ipv4.tcp_keepalive_probes=5 >> /etc/sysctl.conf
+            end script
+          - branch: !Ref gitBranch
+            conf: !Ref ConfigurationFilePath
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: !Ref AutoScalingGroupAvailabilityZone
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      VPCZoneIdentifier: !Ref InstanceSubnets
+      DesiredCapacity: "1"
+      MaxSize: "1"
+      MinSize: "1"
+      Tags:
+        - Key: Component
+          Value: anomaly detector
+          PropagateAtLaunch: true
+        - Key: Name
+          Value: anomaly detector
+          PropagateAtLaunch: true
+
+  CURWriterTrigger:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Code:
+        S3Bucket: !Ref LambdaCodeBucket
+        S3Key: !Ref LambdaCodeKey
+      Description: Triggers CUR writing to redshift
+      Environment:
+        Variables:
+          anomalyASG: !Ref AutoScalingGroup
+      FunctionName: CUR_Write_Trigger
+      Handler: CUR_to_Redshift_lambda.lambda_handler
+      MemorySize: 128
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/anomalyDetectorLambdaRole
+      Runtime: python2.7
+      Timeout: 20
+      VpcConfig:
+        SecurityGroupIds: !Ref InstanceSecurityGroup
+        SubnetIds: !Ref InstanceSubnets

@@ -31,7 +31,7 @@ The anomaly detector has 2 main functions:
 
 
 ### Algorithem
-tbd
+coming soon...
 
 
 ## Setup & Deployment
@@ -168,6 +168,11 @@ The parameters in the file are divided to 3 sections:
   * *Default*: /sundaysky/logs/anomaly_detector/
 
 ### Queries
-tbd
+coming soon...
 
 
+### Usage
+coming soon...
+
+#### Useful SQL queries
+coming soon...

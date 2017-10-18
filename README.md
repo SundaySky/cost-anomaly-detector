@@ -1,4 +1,4 @@
-# AWS Cost Anomaly Detector
+# AWS Cost Anomaly Detector (CAD)
 
 ## Background
 AWS’s pay-for-what-you-use policy is one of its great advantages, but it can also be dangerous – a bug or high traffic might cause unexpected billing.  
@@ -167,7 +167,7 @@ The parameters in the file are divided to 3 sections:
   * *Usage*: Folder for CUR_writer and anomaly detector logs
   * *Default*: /sundaysky/logs/anomaly_detector/
 
-### Queries
+#### Queries
 coming soon...
 
 
@@ -175,4 +175,34 @@ coming soon...
 coming soon...
 
 #### Useful SQL queries
-coming soon...
+**Get relative date results**  
+yesterday:
+```sql
+SELECT * FROM awsbilling_anomalies where anomaly_date=DATE 'yesterday';
+```
+2 days ago:
+```sql
+SELECT * FROM awsbilling_anomalies where anomaly_date=DATE 'today'-2;
+```
+
+**Get results by date**  
+by date:
+```sql
+SELECT * FROM awsbilling_anomalies where anomaly_date=DATE '2017-10-15';
+```
+Since date:
+by date:
+```sql
+SELECT * FROM awsbilling_anomalies where anomaly_date>=DATE '2017-10-15';
+```
+
+**Get anomalies**
+Add to the end of one of the queries above:
+```sql
+AND isanomaly=1;
+```
+
+**Get your billing tables**
+```sql
+SELECT DISTINCT tablename FROM PG_TABLE_DEF	WHERE tablename ilike 'awsbilling%';
+```

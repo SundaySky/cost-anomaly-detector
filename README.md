@@ -222,17 +222,28 @@ Lets go over some important things to know:
 	you will see all of them in the results table.
 * *Tags*: Just use your tag key as key and it's value as value.  
 
-For example, to check my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
+###### Example
+I would like to find anomalies in my account ec2 costs:
 ```yaml
 queries:
+  ec2:
+    service: AmazonEC2
+```
+In addition, I would like to keep track of my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
+```yaml
+queries:
+  ec2:
+    service: AmazonEC2
   ec2_web_instances:
     service: AmazonEC2
     operation: RunInstances*
     component: web
 ```
-If I would like to check my general web usage, but also find out if anomalies occur on any specific region:
+If I would like to check my general web usage, but also find out if anomalies occur on any specific region, I would add the region key:
 ```yaml
 queries:
+  ec2:
+    service: AmazonEC2
   ec2_web_instances:
     service: AmazonEC2
     operation: RunInstances*
@@ -241,7 +252,50 @@ queries:
 ```
 
 ### Usage
-coming soon...
+After the setup is done, you should have a lambda function which would be triggered whenever new billing data appears in the bucket and an instance which will write that data to redshift and run the algorithm right away.  
+According to AWS, the CUR data about the current day and previous day, might not be partial and inaccurate - unfourtunatly, for that reason the **algorithm would run for the day before yesterday**.  
+That means (by default) - every day, you would see the results for 2-days-ago added to the table.  
+
+#### Anomaly detector data
+The anomaly detector would create 2 new table for each month, called *awsbillingYYYYMM and awsbillingYYYYMM_tagmapping*. (example: awsbilling201710, awsbilling201710_tagmapping)  
+The first table would contain all the monthly billing data, it can also be queried manually to drill down the data (examples of usage will be provided in the 'Useful queries section below)
+The second would map the tag values in the CUR to the names you use to enable queries by tags, you probably shouldn't use or change that table.  
+
+In addition, the anomaly detector would write all you query results by date to the *awsbilling_anomalies* table you created during the setup, we'll discuss it's usage soon.
+
+#### The results table
+You can directly query the results table using the queries below.
+```sql
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date=DATE 'today'-2;
+```
+The table has 7 columns:
+* *anomaly_date*: The date which the query was *made for* (no neccecarly the day it was made)
+* *service*: The query name (given in the conf file) with additional _region or _general if it was region-specific
+* *isanomaly*: 0 or 1, would be 1 if the 3 thresholds were breached
+* *daily_cost*: Sum cost of the resources included in the query that day (*anomaly_date* day)
+* *mean_cost*: Average cost of the resources included in the query for the days included
+* *std_cost*: Standard deviation of the *mean_cost*
+* *score*: A mesure of how abnormal the result is.  
+		   If the *daily_cost* is more expensive than the *mean_cost*, the score would be the differece divided by the standard deviation 
+
+#### Alerting 
+We reccoming using a system to query the results table and send notfication whenever a result with an anomaly score of 1 appears.  
+```sql
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date=DATE 'today'-2 AND isanomaly=1;
+```
+You would want to receive alerts whenever the query above returns resuls.
+
+#### Manual Usage
+Sometimes you might like to run the anomaly detector manually for a specific date or with different parameters.  
+You can just log in to the instance and run the script, you can pass any parameter as a keyword argument.  
+The default date is the day before yesterday, to run for a specific date, pass the date in 'YYYY-MM-DD' format:
+```
+python /sundaysky/cost_anomaly_detector/anomaly_detector.py date=2017-10-15
+```
+By default the script will run with the parameters provided in the conf file, but if you want, you can override any of them by using their names as the keywords:
+```
+python /sundaysky/cost_anomaly_detector/anomaly_detector.py date=2017-10-15 threshold_std=3
+```
 
 #### Useful SQL queries
 **Get relative date results**  

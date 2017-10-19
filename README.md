@@ -133,7 +133,8 @@ Generally, there is no reason to open or change it, just input the parameter val
 
   
 ### Configuration File
-the configuration file is created in YAML format, please edit the file according to your usage and upload it to s3.
+the configuration file is created in YAML format, there is an example CAD_conf.yml file in the 'deployment' directory.  
+Please edit the file according to your usage and upload it to s3.
 
 The parameters in the file are divided to 3 sections:
 	DB params - Should be changed according to your database.
@@ -194,10 +195,12 @@ The anomaly detector can divide your data in 4 methods:
 * *By AWS Service*: such as ec2, s3, lambda, etc..
 * *By AWS Operation*: such as RunInstances, LoadBalancing, PutObject, GetObject, etc..
 * *By AWS Region*: such as us-east-1, eu-west-2, etc...
-* *By Resource Tags*: user given tags, smart usage of tags will enable you to get exceptional value!
+* *By Resource Tags*: user given tags. Smart usage of tags will enable you to get exceptional value!
 
 
 ##### Write your own queries
+The queries are written in easily readable yaml format. We already added a few example queries to the example CAD_conf.yml file.  
+Example queries:
 ```yaml
 queries:
   ec2:
@@ -206,7 +209,25 @@ queries:
   ec2_instances:
     service: AmazonEC2
     operation: RunInstances*
-    region: all
+    region: us-east-1, us-west-1
+```
+
+Lets go over some important things to know:
+* *Service/Operation*: You can use the SQL queries in the bottom on your billing table to find the right values for those fields (relevant to you)
+* *Region*: Can receive 3 types of values:
+	* single region: (example: us-east-1)
+	* multiple regions: (example: us-east-1,us-west-1)
+	* all regions: all region you use, as defined in 'aws_query_regions' parameter in the conf file.
+	If you input more than one region, the query would be replicated and run seperately, once for each region and once for all region combined (general),
+	you will see all of them in the results table.
+* *Tags*: Just use your tag key as key and it's value as value.  
+		  for example, to check my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
+```yaml
+queries:
+  ec2_instances:
+    service: AmazonEC2
+	operation: RunInstances*
+	component: web
 ```
 
 

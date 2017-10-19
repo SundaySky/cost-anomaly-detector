@@ -217,8 +217,8 @@ Lets go over some important things to know:
 * *Region*: Can receive 3 types of values:
 	* single region: (example: us-east-1)
 	* multiple regions: (example: us-east-1,us-west-1)
-	* all regions: all region you use, as defined in 'aws_query_regions' parameter in the conf file.
-	If you input more than one region, the query would be replicated and run seperately, once for each region and once for all region combined (general),
+	* all regions: all region you use, as defined in 'aws_query_regions' parameter in the conf file.  
+	  If you input more than one region, the query would be replicated and run seperately, once for each region and once for all region combined (general),
 	you will see all of them in the results table.
 * *Tags*: Just use your tag key as key and it's value as value.  
 		  for example, to check my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
@@ -226,8 +226,8 @@ Lets go over some important things to know:
 queries:
   ec2_instances:
     service: AmazonEC2
-	operation: RunInstances*
-	component: web
+    operation: RunInstances*
+    component: web
 ```
 
 

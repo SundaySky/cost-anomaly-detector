@@ -9,7 +9,7 @@ The anomaly detector has 2 main functions:
 * Finding billing anomalies
 
 
-### Flow
+### General Flow
 * Whenever a new CUR is uploaded to your billing bucket a lambda is triggered
 * The lambda issues a command to the anomaly detector instance 
 * The instance creates a Redshift table and writes the CUR data to it
@@ -31,7 +31,26 @@ The anomaly detector has 2 main functions:
 
 
 ### Algorithem
-coming soon...
+In order to detect anomalies, our algorithm compares the prices of a specific day to the previous days and determines if that day is unusually expensive.  
+
+All the constant parameters we use for the algorithm are configured int the CAD_conf.yml file and can be easily modified.  
+We tested and fine-tuned them on real traffic, so generally we reccomend not to change them - but in case you receive false positives or miss anomalies, you may lower/increase them.  
+
+#### Algorithm Flow
+* The anomaly detector queries the billing data from the last 14 days (by default)
+* The anomaly detector reads the queries section of the CAD_conf.yml file and runs the following steps for each query specified:
+	* Caluculates the cost of the resources specified in the query for each day in range (*excluding costs of reserved resources*)
+	* Calculates the average daily cost and the standard deviation
+	* Marks the query as an anomaly only if *all 3 thresholds* where crossed:
+		* *relative threshold*: The day checked is at least 1.25 times the average cost of previous days. (by default)
+		* *standard deviation threshold*: The day checked is at least 4 standard deviation more expensive than the average cost of previous days. (by default)
+		* *absolute threshold*: The day checked is more expensive than $10. (by default)
+		
+We found out that we get the best results by using all 3 thresholds together, each for it's own reason:  
+*Relative threshold* filters out insignificant anomalies.  
+*Standard deviation threshold* filters out regular usage of services with normal differing daily usage (high days/low days).
+*Absolute threshold* prevents us from getting notified about inexpensive anomalies, which will lead to no action.
+	
 
 
 ## Setup & Deployment
@@ -178,21 +197,21 @@ coming soon...
 **Get relative date results**  
 yesterday:
 ```sql
-SELECT * FROM awsbilling_anomalies where anomaly_date=DATE 'yesterday';
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date=DATE 'yesterday';
 ```
 2 days ago:
 ```sql
-SELECT * FROM awsbilling_anomalies where anomaly_date=DATE 'today'-2;
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date=DATE 'today'-2;
 ```
 
 **Get results by date**  
 *by date*:
 ```sql
-SELECT * FROM awsbilling_anomalies where anomaly_date=DATE '2017-10-15';
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date=DATE '2017-10-15';
 ```
 *Since date*:
 ```sql
-SELECT * FROM awsbilling_anomalies where anomaly_date>=DATE '2017-10-15';
+SELECT * FROM awsbilling_anomalies WHERE anomaly_date>=DATE '2017-10-15';
 ```
 
 **Get anomalies**

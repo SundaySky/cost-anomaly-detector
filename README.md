@@ -188,11 +188,18 @@ The parameters in the file are divided to 3 sections:
 
 #### Queries
 The real power of the anomaly detector comes from the possibility to easliy analyze many differnt combinations of data relevant for your specific account and use cases.  
-To do so, you would define the queries relevant for you in the queries section of the CAD_conf.yml file.
+To do so, you would define the queries relevant for you in the queries section of the CAD_conf.yml file.  
 
+The anomaly detector can divide your data in 4 methods:
+* *By AWS Service*: such as ec2, s3, lambda, etc..
+* *By AWS Operation*: such as RunInstances, LoadBalancing, PutObject, GetObject, etc..
+* *By AWS Region*: such as us-east-1, eu-west-2, etc...
+* *By Resource Tags*: user given tags, smart usage of tags will enable you to get exceptional value!
+
+
+##### Write your own queries
 ```yaml
 queries:
-  # ec2
   ec2:
     service: AmazonEC2
     region: all

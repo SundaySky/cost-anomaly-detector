@@ -220,7 +220,19 @@ Add to the end of one of the queries above:
 AND isanomaly=1;
 ```
 
+##### General Data
 **Get your billing tables**
 ```sql
 SELECT DISTINCT tablename FROM PG_TABLE_DEF	WHERE tablename ilike 'awsbilling%';
+```
+
+**Get AWS Service names**
+Using this query would give you the names of all AWS service you pay for. Those are the names you should you in your queries 'service' parameter
+```sql
+SELECT lineitem_productcode as service FROM awsbilling201710 GROUP BY lineitem_productcode;
+```
+**Get AWS Operation names**
+Using this query would give you the names of all AWS operations you pay for. Those are the names you should you in your queries 'operation' parameter
+```sql
+SELECT lineitem_operation as operation FROM awsbilling201710 GROUP BY lineitem_operation;
 ```

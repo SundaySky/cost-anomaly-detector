@@ -221,15 +221,24 @@ Lets go over some important things to know:
 	  If you input more than one region, the query would be replicated and run seperately, once for each region and once for all region combined (general),
 	you will see all of them in the results table.
 * *Tags*: Just use your tag key as key and it's value as value.  
-		  for example, to check my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
+
+For example, to check my web servers usage, I would make a query to check all instances with tag 'component' equals 'web':
 ```yaml
 queries:
-  ec2_instances:
+  ec2_web_instances:
     service: AmazonEC2
     operation: RunInstances*
     component: web
 ```
-
+If I would like to check my general web usage, but also find out if anomalies occur on any specific region:
+```yaml
+queries:
+  ec2_web_instances:
+    service: AmazonEC2
+    operation: RunInstances*
+    component: web
+	region: all
+```
 
 ### Usage
 coming soon...

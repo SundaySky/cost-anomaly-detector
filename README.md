@@ -43,7 +43,7 @@ We tested and fine-tuned them on real traffic, so generally we reccomend not to 
 	* Calculates the average daily cost and the standard deviation
 	* Marks the query as an anomaly only if *all 3 thresholds* where crossed:
 		* *relative threshold*: The day checked is at least 1.25 times the average cost of previous days. (by default)
-		* *standard deviation threshold*: The day checked is at least 4 standard deviation more expensive than the average cost of previous days. (by default)
+		* *standard deviation threshold*: The day checked is at least 4 standard deviations more expensive than the average cost of previous days. (by default)
 		* *absolute threshold*: The day checked is more expensive than $10. (by default)
 		
 We found out that we get the best results by using all 3 thresholds together, each for it's own reason:  
@@ -187,7 +187,20 @@ The parameters in the file are divided to 3 sections:
   * *Default*: /sundaysky/logs/anomaly_detector/
 
 #### Queries
-coming soon...
+The real power of the anomaly detector comes from the possibility to easliy analyze many differnt combinations of data relevant for your specific account and use cases.  
+To do so, you would define the queries relevant for you in the queries section of the CAD_conf.yml file.
+
+```yaml
+queries:
+  # ec2
+  ec2:
+    service: AmazonEC2
+    region: all
+  ec2_instances:
+    service: AmazonEC2
+    operation: RunInstances*
+    region: all
+```
 
 
 ### Usage

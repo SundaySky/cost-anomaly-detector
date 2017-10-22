@@ -235,7 +235,6 @@ def get_kwargs(arguments):
 if __name__ == '__main__':
 	# read params
 	params = {}
-	params['date'] = datetime.strftime(datetime.now() - timedelta(days=2), '%Y-%m-%d')
 	# override params with conf file
 	with open(path.dirname(__file__)+'/CAD_conf.yml','r') as conf_file:
 		params.update(yaml.load(conf_file))
@@ -244,4 +243,10 @@ if __name__ == '__main__':
 	# modify per region queries
 	params['queries'] = modify_queries(params)
 	
-	run_detector(params['queries'],params)
+	if not date in params:
+		params['date'] = datetime.strftime(datetime.now() - timedelta(days=2), '%Y-%m-%d')
+		run_detector(params['queries'],params)
+		params['date'] = datetime.strftime(datetime.now() - timedelta(days=1), '%Y-%m-%d')
+		run_detector(params['queries'],params)
+	else:
+		run_detector(params['queries'],params)

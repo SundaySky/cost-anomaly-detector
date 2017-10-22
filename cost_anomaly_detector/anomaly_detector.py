@@ -49,8 +49,14 @@ def run_detector(queries, params):
 	log_file = 'anomaly_detector_results_'+params['date']+'.txt'
 	log_file_path = path.join(LOG_FOLDER,log_file)
 	if path.exists(log_file_path):
-		print "Log file already exist, exiting."
-		return
+		print "Log file already exist, deleting old data."
+		sql_query = 'delete from awsbilling_anomalies where anomaly_date=DATE \'{}\';'.format(params['date'])
+		con=psycopg2.connect(dbname=params['redshift_db_name'], host=params['redshift_hostname'], port='5439', user=params['redshift_user'], password=params['redshift_password'])
+		con.autocommit = True
+		cur = con.cursor()
+		cur.execute(sql_query)
+		cur.close()
+		con.close()
 	if not path.exists(LOG_FOLDER):
 		makedirs(LOG_FOLDER)
 	

@@ -30,7 +30,7 @@ The anomaly detector has 2 main functions:
 	* To write the data and detect the anomalies (the process takes too long to run with a lambda function)
 
 
-### Algorithem
+### Algorithm
 In order to detect anomalies, our algorithm compares the prices of a specific day to the previous days and determines if that day is unusually expensive.  
 
 All the constant parameters we use for the algorithm are configured int the CAD_conf.yml file and can be easily modified.  
@@ -41,10 +41,10 @@ We tested and fine-tuned them on real traffic, so generally we reccomend not to 
 * The anomaly detector reads the queries section of the CAD_conf.yml file and runs the following steps for each query specified:
 	* Caluculates the cost of the resources specified in the query for each day in range (*excluding costs of reserved resources*)
 	* Calculates the average daily cost and the standard deviation
-	* Marks the query as an anomaly only if *all 3 thresholds* where crossed:
-		* *relative threshold*: The day checked is at least 1.25 times the average cost of previous days. (by default)
-		* *standard deviation threshold*: The day checked is at least 4 standard deviations more expensive than the average cost of previous days. (by default)
-		* *absolute threshold*: The day checked is more expensive than $10. (by default)
+	* Reports anomaly only if *all 3 thresholds* regarding the daily cost were crossed:
+		* *relative threshold*: It is at least 1.25 times the average cost of previous days. (by default)
+		* *standard deviation threshold*: It is at least 4 standard deviations higher than the average cost of previous days. (by default)
+		* *absolute threshold*: It is higher than $10. (by default)
 		
 We found out that we get the best results by using all 3 thresholds together, each for it's own reason:  
 *Relative threshold* filters out insignificant anomalies.  

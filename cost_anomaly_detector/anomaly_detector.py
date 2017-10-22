@@ -49,7 +49,7 @@ def run_detector(queries, params):
 	log_file = 'anomaly_detector_results_'+params['date']+'.txt'
 	log_file_path = path.join(LOG_FOLDER,log_file)
 	if path.exists(log_file_path):
-		print "Log file already exist, deleting old data."
+		print "Log file already exist"
 		sql_query = 'delete from awsbilling_anomalies where anomaly_date=DATE \'{}\';'.format(params['date'])
 		con=psycopg2.connect(dbname=params['redshift_db_name'], host=params['redshift_hostname'], port='5439', user=params['redshift_user'], password=params['redshift_password'])
 		con.autocommit = True
@@ -64,8 +64,13 @@ def run_detector(queries, params):
 	queries = {k:dict((fix_column_names(c),v[c]) for c in v) for k,v in queries.items()}
 	df = fetch_data(params)
 	df.columns = map(fix_column_names, df.columns)
-	df['region'] = df['region'].apply(parse_region)
+	
 	print 'DataFrame columns: ' + ', '.join(df.columns.tolist())
+	
+	df['region'] = df.apply(lambda x:parse_region(x['usagetype'],x['region']),axis=1)
+	
+	
+	
 	out_file = open(log_file_path,'w')
 	for query in queries:
 		print '_'*70
@@ -115,12 +120,14 @@ def write_anomalies_to_db(anomalies,params):
 		raise e
 
 #%%
-def parse_region(usagetype):
-	regions = {'APN1':'ap-northeast-1', 'APN2':'ap-northeast-2', 'APS1':'ap-southeast-1', 'APS2':'ap-southeast-2', 'APS3':'ap-south-1', 'CAN1':'ca-central-1', 'EUC1':'eu-central-1', 'EU':'eu-west-1', 'EUW2':'eu-west-2', 'SAE1':'sa-east-1', 'USE1':'us-east-1', 'USE2':'us-east-2', 'USW1':'us-west-1', 'USW2':'us-west-2'}
-	for k,v in regions.items():
-		if usagetype.startswith(k):
-			return v
-	return 'us-east-1'
+def parse_region(usagetype, region):
+	if not region:
+		regions = {'APN1':'ap-northeast-1', 'APN2':'ap-northeast-2', 'APS1':'ap-southeast-1', 'APS2':'ap-southeast-2', 'APS3':'ap-south-1', 'CAN1':'ca-central-1', 'EUC1':'eu-central-1', 'EU':'eu-west-1', 'EUW2':'eu-west-2', 'SAE1':'sa-east-1', 'USE1':'us-east-1', 'USE2':'us-east-2', 'USW1':'us-west-1', 'USW2':'us-west-2'}
+		for k,v in regions.items():
+			if usagetype.startswith(k):
+				return v
+		return 'us-east-1'
+	return region
 #%%        
 def build_query_df(df,query):
 	query_str = ' and '.join([k+'==\''+v+'\'' for k,v in query.items() if '*' not in v])    
@@ -163,16 +170,16 @@ def run_single_query(table_name,tags_df,params):
 	else:
 		aws_account = '\'\''
 	sql_query = 'select SUBSTRING(identity_timeinterval,1,10) as day , lineitem_productcode as service, SUM(lineitem_unblendedcost) as cost, \
-					 lineitem_operation as operation, Product_usagetype as region %s \
+					 lineitem_operation as operation, product_usagetype, product_region as region %s \
 					  from %s \
 					  where lineitem_lineitemtype not ilike \'RIFee\'\
 					  and lineitem_lineitemtype not ilike \'Fee\'\
 					  and lineitem_lineitemtype not ilike \'Refund\'\
 					  and lineitem_lineitemtype not ilike \'credit\'\
 					  and (lineitem_usageaccountid IN (%s) OR %s <= 2)\
-					  group by day, lineitem_productcode, lineitem_operation, Product_usagetype %s' % (tags_str,table_name,aws_account,str(len(aws_account)),tags_str)
+					  group by day, lineitem_productcode, lineitem_operation, product_region, product_usagetype %s' % (tags_str,table_name,aws_account,str(len(aws_account)),tags_str)
 	results = fetch_db_data(sql_query,params)
-	df = pd.DataFrame(results, columns = ['day','service','cost','operation','region'] + list(tags_df['usertag']))
+	df = pd.DataFrame(results, columns = ['day','service','cost','operation','usagetype','region'] + list(tags_df['usertag']))
 	df['day'] = pd.to_datetime(df['day'])
 	return df
 	

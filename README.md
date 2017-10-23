@@ -1,5 +1,9 @@
 # AWS Cost Anomaly Detector (CAD)
 
+## License
+This program is available to be used under GNU general public license v3  
+https://choosealicense.com/licenses/gpl-3.0/
+
 ## Background
 AWS’s pay-for-what-you-use policy is one of its great advantages, but it can also be dangerous – a bug or high traffic might cause unexpected billing.  
 The “aws cost anomaly detector” is a product made to keep track of your aws account billing and notify you whenever you pay more than expected.

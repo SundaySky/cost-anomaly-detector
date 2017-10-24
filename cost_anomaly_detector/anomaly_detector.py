@@ -243,7 +243,7 @@ if __name__ == '__main__':
 	# modify per region queries
 	params['queries'] = modify_queries(params)
 	
-	if not date in params:
+	if not 'date' in params:
 		params['date'] = datetime.strftime(datetime.now() - timedelta(days=2), '%Y-%m-%d')
 		run_detector(params['queries'],params)
 		params['date'] = datetime.strftime(datetime.now() - timedelta(days=1), '%Y-%m-%d')

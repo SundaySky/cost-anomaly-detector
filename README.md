@@ -31,9 +31,9 @@ The anomaly detector has 2 main functions:
 
 
 ### Algorithm
-In order to detect anomalies, our algorithm compares the prices of a specific day to the previous days and determines if that day is unusually expensive.  
+In order to detect anomalies, our algorithm compares service cost on a specific day to past cost, and determines if that day's cost is unusually high.  
 
-All the constant parameters we use for the algorithm are configured int the CAD_conf.yml file and can be easily modified.  
+All the constant parameters we use for the algorithm are configured in the CAD_conf.yml file and can be easily modified.  
 We tested and fine-tuned them on real traffic, so generally we reccomend not to change them - but in case you receive false positives or miss anomalies, you may lower/increase them.  
 
 #### Algorithm Flow

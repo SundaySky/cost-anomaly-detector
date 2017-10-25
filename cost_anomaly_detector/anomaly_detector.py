@@ -1,7 +1,6 @@
 import psycopg2
 import pandas as pd
 from datetime import datetime,timedelta
-import numpy as np
 from os import path,makedirs
 import sys
 import yaml

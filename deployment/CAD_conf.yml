@@ -9,7 +9,7 @@ s3_aws_region: *
 
 # Algorithm params
 threshold_relative: 1.25
-threshold_std: 4
+threshold_std: 3.5
 threshold_absolute: 10
 history_period_days: 14
 #aws_account: *

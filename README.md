@@ -47,7 +47,7 @@ We tested and fine-tuned them on real traffic, so generally we reccomend not to 
 	* Calculates the average daily cost and the standard deviation
 	* Reports anomaly only if *all 3 thresholds* regarding the daily cost were crossed:
 		* *relative threshold*: It is at least 1.25 times the average cost of previous days. (by default)
-		* *standard deviation threshold*: It is at least 4 standard deviations higher than the average cost of previous days. (by default)
+		* *standard deviation threshold*: It is at least 3.5 standard deviations higher than the average cost of previous days. (by default)
 		* *absolute threshold*: It is higher than $10. (by default)
 		
 We found out that we get the best results by using all 3 thresholds together, each for it's own reason:  
@@ -174,7 +174,7 @@ The parameters in the file are divided to 3 sections:
   * *Default*: 1.25
 * **threshold_std** (*int*)
   * *Usage*: explained in Algorithem section above
-  * *Default*: 4
+  * *Default*: 3.5
 * **threshold_absolute** (*int*)
   * *Usage*: explained in Algorithem section above
   * *Default*: 10

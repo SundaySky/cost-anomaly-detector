@@ -33,6 +33,19 @@ The anomaly detector has 2 main functions:
 * An anomaly detector instance (t2.micro)
 	* To write the data and detect the anomalies (the process takes too long to run with a lambda function)
 
+#### How much should it cost?
+TL;DR - $20~$200 per month (depending if you already have a Redshift DB)  
+The CAD infrastratue requires minor usage of a few AWS services: the lambda function, S3 storage and ec2 instance should sum up to approximately $10-$20 per month.  
+Another cost to take into consideration is the database storage usage, The CURs are written to S3 buckets as gzipped csv files, the CAD creates a table for each month and writes the uncompressed data to it.
+In order to estimate the required storage go to your billing bucket and follow these steps:  
+* find a directory of a report from the last day of a month, you would see one or more .csv.gz files
+* calculate the aggregated size of the csv files for that day
+* each 120-130MB of compressed files would take about 1.2GB-1.5GB on your DB
+* the CURs are on a month-to-date basis - so the cost of the size of the last day would be the size of the entire month  
+To sum up:  
+In case you already have a redshift cluster, the costs are minor - the CUR sizes are minor related to even the smallest Redshift instances offered by aws, so adding the CAD table would probably require no additional cost.
+Otherwise, setting up a Redshift DB can be a bit more costly - you can use AWS smallest redshift instance, dc2.large has 160GB storage which should be enough even for quite large accounts, it costs $180 per month on-demand, far less with RI.
+
 
 ### Algorithm
 In order to detect anomalies, our algorithm compares service cost on a specific day to past cost, and determines if that day's cost is unusually high.  

@@ -34,7 +34,7 @@ The anomaly detector has 2 main functions:
 	* To write the data and detect the anomalies (the process takes too long to run with a lambda function)
 
 #### How much should it cost?
-**TL;DR** - *$20~$200 per month (depending if you already have a Redshift DB)*
+**TL;DR** - *$20~$200 per month (depending on whether you already have a Redshift DB)*
   
 The CAD infrastratue requires minor usage of a few AWS services: the lambda function, S3 storage and ec2 instance should sum up to approximately $10-$20 per month.  
 Another cost to take into consideration is the database storage usage, The CURs are written to S3 buckets as gzipped csv files, the CAD creates a table for each month and writes the uncompressed data to it.

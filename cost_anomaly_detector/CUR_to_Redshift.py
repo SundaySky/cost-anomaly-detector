@@ -56,8 +56,8 @@ logging.debug('Original SQL query: '+sql_query)
 
 sql_query = re.compile('(<S3_BUCKET_REGION>)').sub("'" + params['s3_aws_region'] + "'",sql_query,0)
 sql_query = re.compile('(<AWS_ROLE>)').sub(params['redshift_role'],sql_query,0)
-sql_query = re.compile('Amount VARCHAR\(512\)').sub('Amount DECIMAL(20,12)',sql_query,0)
-sql_query = re.compile('lendedCost VARCHAR\(512\)').sub('lendedCost DECIMAL(20,12)',sql_query,0)
+sql_query = re.compile('Amount VARCHAR\(512\)').sub('Amount DECIMAL(50,10)',sql_query,0)
+sql_query = re.compile('lendedCost VARCHAR\(512\)').sub('lendedCost DECIMAL(50,10)',sql_query,0)
 logging.debug('Modified SQL query: '+sql_query)
 
 regex = re.search('create table (.+?)\(', sql_query)

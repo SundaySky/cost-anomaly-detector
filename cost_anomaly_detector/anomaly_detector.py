@@ -14,7 +14,7 @@ def modify_queries(params):
 		modified_query = query_params.copy()
 		modified_query = dict((k.lower(), v) for k, v in modified_query.iteritems())
 		for key in modified_query.keys():
-			if key not in ['region','service','operation']:
+			if key not in ['region','service','operation','usagetype']:
 				modified_query['user_'+key] = modified_query.pop(key)
 		# Modify by-region queries
 		if 'region' in modified_query:

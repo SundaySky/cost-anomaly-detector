@@ -169,7 +169,7 @@ def run_single_query(table_name,tags_df,params):
 	else:
 		aws_account = '\'\''
 	sql_query = 'select SUBSTRING(identity_timeinterval,1,10) as day , lineitem_productcode as service, SUM(lineitem_unblendedcost) as cost, \
-					 lineitem_operation as operation, product_usagetype, product_region as region %s \
+					 lineitem_operation as operation, product_usagetype as usagetype, product_region as region %s \
 					  from %s \
 					  where lineitem_lineitemtype not ilike \'RIFee\'\
 					  and lineitem_lineitemtype not ilike \'Fee\'\

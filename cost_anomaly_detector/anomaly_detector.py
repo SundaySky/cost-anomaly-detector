@@ -129,11 +129,21 @@ def parse_region(usagetype, region):
 	return region
 #%%        
 def build_query_df(df,query):
-	query_str = ' and '.join([k+'==\''+v+'\'' for k,v in query.items() if '*' not in v])    
-	query_str +=  (' and ' + ' and '.join(['\''+v.replace('*','')+'\' in '+k for k,v in query.items() if '*' in v])) if '*' in ''.join(query.values()) else ''
-	print query_str
-		
-	return df.query(query_str)[['day','cost']].groupby('day').sum()
+	final_condition = df['region'].str.contains('')
+
+	for k,v in query.iteritems():
+		if v.startswith('*'):
+			if v.endswith('*'):
+				query_condition = df[k].str.contains(v[1:-1])
+			else:
+				query_condition = df[k].str.endswith(v[1:])
+		elif v.endswith('*'):
+			query_condition = df[k].str.startswith(v[:-1])
+		else:
+			query_condition = df[k] == v
+		final_condition = final_condition & query_condition
+
+	return df[final_condition][['day','cost']].groupby('day').sum()
 #%%
 def fetch_tags(table,params):
 	sql_query = 'select remappedusertag, usertag from %s' % table

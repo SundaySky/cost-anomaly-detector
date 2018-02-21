@@ -39,6 +39,8 @@ def modify_queries(params):
 				general_query = temp_query.copy()
 				del[general_query['region']]
 				by_region_queries[query_name+'_'+'general'] = general_query
+			else:
+				by_region_queries[query_name] = modified_query
 		else:
 			by_region_queries[query_name] = modified_query
 	return by_region_queries
@@ -145,6 +147,10 @@ def build_query_df(df,query):
 
 	return df[final_condition][['day','cost']].groupby('day').sum()
 #%%
+def send_alert(alert, params):
+	if 'sns_topic' in params:
+		print alert
+
 def fetch_tags(table,params):
 	sql_query = 'select remappedusertag, usertag from %s' % table
 	results = fetch_db_data(sql_query,params)

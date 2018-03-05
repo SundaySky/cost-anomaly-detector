@@ -280,8 +280,8 @@ queries:
     service: AmazonEC2
     operation: RunInstances*
     component: 
-	  - web
-	  - worker
+      - web
+      - worker
 ```
 
 ### Usage

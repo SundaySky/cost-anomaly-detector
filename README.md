@@ -240,6 +240,8 @@ Lets go over some important things to know:
 	you will see all of them in the results table.
 * *Tags*: Just use your tag key as key and it's value as value.  
 
+**Note**: *each key can take a list value to match any one of the values in the list*
+
 ###### Example
 I would like to find anomalies in my account ec2 costs:
 ```yaml
@@ -267,6 +269,19 @@ queries:
     operation: RunInstances*
     component: web
     region: all
+```
+
+To find anomalies in my entire service I want to combine the price of instances with either the 'web' or 'worker' component.
+```yaml
+queries:
+  ec2:
+    service: AmazonEC2
+  ec2_web_instances:
+    service: AmazonEC2
+    operation: RunInstances*
+    component:
+	  - web
+	  - worker
 ```
 
 ### Usage

@@ -130,19 +130,29 @@ def parse_region(usagetype, region):
 		return 'us-east-1'
 	return region
 #%%        
+def check_condition(df,v):
+	if v.startswith('*'):
+		if v.endswith('*'):
+			query_condition = df.str.contains(v[1:-1])
+		else:
+			query_condition = df.str.endswith(v[1:])
+	elif v.endswith('*'):
+		query_condition = df.str.startswith(v[:-1])
+	else:
+		query_condition = df == v
+	return query_condition
+#%%
 def build_query_df(df,query):
 	final_condition = df['region'].str.contains('')
 
 	for k,v in query.iteritems():
-		if v.startswith('*'):
-			if v.endswith('*'):
-				query_condition = df[k].str.contains(v[1:-1])
-			else:
-				query_condition = df[k].str.endswith(v[1:])
-		elif v.endswith('*'):
-			query_condition = df[k].str.startswith(v[:-1])
+		if type(v) == list:
+			query_condition = df['region'].str.contains('false')
+			for value in v:
+				query_condition = query_condition | check_condition(df[k],value)
 		else:
-			query_condition = df[k] == v
+			query_condition = check_condition(df[k],v)
+		
 		final_condition = final_condition & query_condition
 
 	return df[final_condition][['day','cost']].groupby('day').sum()
@@ -150,7 +160,7 @@ def build_query_df(df,query):
 def send_alert(alert, params):
 	if 'sns_topic' in params:
 		print alert
-
+#%%
 def fetch_tags(table,params):
 	sql_query = 'select remappedusertag, usertag from %s' % table
 	results = fetch_db_data(sql_query,params)

@@ -279,9 +279,9 @@ queries:
   ec2_web_instances:
     service: AmazonEC2
     operation: RunInstances*
-    component:
-	 - web
-	 - worker
+    component: 
+	  - web
+	  - worker
 ```
 
 ### Usage

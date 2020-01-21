@@ -52,7 +52,7 @@ Otherwise, setting up a Redshift DB can be a bit more costly - you can use AWS s
 In order to detect anomalies, our algorithm compares service cost on a specific day to past cost, and determines if that day's cost is unusually high.  
 
 All the constant parameters that we use for the algorithm are configured in the CAD_conf.yml file and can be easily modified.  
-We tested and fine-tuned them on real traffic, so generally we reccomend not to change them - but in case you receive false positives or miss anomalies, you may lower/increase them.  
+We tested and fine-tuned them on real traffic, so generally we recommend not to change them - but in case you receive false positives or miss anomalies, you may lower/increase them.  
 
 #### Algorithm Flow
 * The anomaly detector queries the billing data from the last 14 days (by default)
